@@ -89,12 +89,29 @@ result.
 Ordinary fixtures in `examples/fixtures/` also carry `expires_at_utc`.
 Treat them as dated evidence, not as unexpiring production objects.
 
+## Pre-commit enforcement composition
+
+This repository does not contain OntoGuard's semantic authorization engine.
+A downstream enforcement runtime may consume a current signed OntoGuard
+authorization before protected execution. The bounded example strictly
+validates the proposed partner action, verifies the signed authorization and
+exact-action binding, and re-verifies those conditions at the controlled
+executor's commit boundary. A caller-computed digest alone is not authority.
+A materially different or malformed action, BLOCK, ESCALATE, expired
+authorization, invalid signature or binding mismatch must not proceed.
+
+OntoGuard determines semantic authorization. The external runtime retains
+enforcement. TRACE records execution evidence only after execution is
+independently proven.
+
+A sanitized example of that seam is in `examples/precommit-enforcement/`.
+
 ## What this integration does not claim
 
 - Not production L5 or non-bypassable route topology.
 - Not hardware attestation, TEE, or confidential computing.
-- Not published TRACE conformance until `trace-tests verify --level 0` runs
-  against a signed record in CI.
+- Marketplace Verified; TRACE Level 0 conformance is established only by
+  signed-record CI verification.
 - Not an OntoGuard semantic engine. Authorization remains in OntoGuard.
 - Per TRACE spec 3.1.2, a Trust Record is issued per execution and a
   reference cannot carry a pre-execution commitment.
